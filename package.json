@@ -1,7 +1,7 @@
 {
   "name": "fs-pet-store",
   "version": "0.1.0",
-  "type": "module",
+  
   "description": "A small server app to demonstrate CRUD over an HTTP API",
   "scripts": {
     "start": "nodemon"
@@ -24,5 +24,7 @@
   "homepage": "https://github.com/gSchool/fs-pet-shop#readme",
   "dependencies": {
     "nodemon": "^1.9.1"
-  }
+  },
+  "main": "index.js",
+  "devDependencies": {}
 }
