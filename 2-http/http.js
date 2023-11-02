@@ -9,8 +9,8 @@ const port = 8000;
 let index;
 
 const server = http.createServer((req, res) => { // create server
-    if (req.method === 'GET' && req.url === '/pets') {//if user send get req, with path to '/pets'
-        fs.readFile(petsPath, 'utf8', (err, petsJSON) => {//read file
+    if (req.method === 'GET' && req.url === '/pets') {
+        fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
             if (err) {
                 console.error(err.stack);
                 res.statusCode = 500;
@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => { // create server
                 }
                 const pets = JSON.parse(petsJSON);
                 if (index < 0 || index >= pets.length) {
-                    res.statusCode = 404; // Not Found
+                    res.statusCode = 404; 
                     res.setHeader('Content-Type', 'text/plain');
                     return res.end('Pet not found');
                 }
@@ -49,7 +49,7 @@ const server = http.createServer((req, res) => { // create server
                 res.end(petJSON);
             });
         } else {
-            res.statusCode = 400; // Bad Request
+            res.statusCode = 400; 
             res.setHeader('Content-Type', 'text/plain');
             res.end('Invalid URL');
         }
