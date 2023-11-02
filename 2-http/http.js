@@ -1,67 +1,64 @@
 'use strict'
-
+//require modules==============
 const fs = require('fs')
-const path = require('path')
 const http = require('http')
-
+const path = require('path')
+//set path to pets.json, set port to 8000
 const petsPath = path.join(__dirname, 'pets.json');
 const port = 8000;
+let index;
 
-const server = http.createServer(function(req, res) {
-    if(req.method === 'GET' && req.url === '/pets') {
-        fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
-            if(err) {
+const server = http.createServer((req, res) => { // create server
+    if (req.method === 'GET' && req.url === '/pets') {//if user send get req, with path to '/pets'
+        fs.readFile(petsPath, 'utf8', (err, petsJSON) => {//read file
+            if (err) {
                 console.error(err.stack);
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'text/plain');
-                return res.end('Internal Server Error');
+                return res.end('Server Error');
             }
-            res.statusCode = 200
-            res.setHeader('Control-Type', 'application/json');
-            res.end(petsJSON);
-        })
-    }
-
-
-    else if(req.method === 'GET' && req.url === '/pets/0') {
-        fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
-            if(err) {
-                console.err(err.stack);
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'text/plain');
-                return res.end('Internal Server Error')
-            }
-            
-            let pets = JSON.parse(petsJSON);
-            let petJSON = JSON.stringify(pets[0]);
-
-            res.setHeader('Content-Type', 'application/json');
-            res.end(petJSON);
-        })
-    }
-    else if (req.method === 'GET' && req.url === '/pets/1') {
-        fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
-          if (err) {
-            console.error(err.stack);
-            res.statusCode = 500;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            return res.end('Internal Server Error');
-          }
-    
-          var pets = JSON.parse(petsJSON);
-          var petsJSON = JSON.stringify(pets[1]);
-    
-          res.setHeader('Content-Type', 'application/json');
-          res.end(petsJSON);
+            res.end(petsJSON);
         });
-      }
-      else {
+    } else if (req.method === 'GET' && req.url.startsWith('/pets/')) {
+        const parts = req.url.split('/');
+        if (parts.length === 3) {
+            const index = parseInt(parts[2]);
+            if (isNaN(index)) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'text/plain');
+                return res.end('Invalid index');
+            }
+            fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+                if (err) {
+                    console.error(err.stack);
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'text/plain');
+                    return res.end('Server Error');
+                }
+                const pets = JSON.parse(petsJSON);
+                if (index < 0 || index >= pets.length) {
+                    res.statusCode = 404; // Not Found
+                    res.setHeader('Content-Type', 'text/plain');
+                    return res.end('Pet not found');
+                }
+                const petJSON = JSON.stringify(pets[index]);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(petJSON);
+            });
+        } else {
+            res.statusCode = 400; // Bad Request
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('Invalid URL');
+        }
+    } else {
         res.statusCode = 404;
         res.setHeader('Content-Type', 'text/plain');
-        res.end(`Request Ain't Here`);
-      }
-    });
-
+        res.end('Not found');
+    }
+});
 
 server.listen(port, function() {
     console.log('listening on port', port)
