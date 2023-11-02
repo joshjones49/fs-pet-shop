@@ -1,5 +1,5 @@
-import fs from 'fs'; //ES6 standard
-import { exit } from 'node:process';
+const fs = require('fs');
+const {exit} = require('node:process');
 //const fs = require('fs'); //common JavaScript
 //import pets from '../pets.json';
 const petsPath = '../pets.json';
