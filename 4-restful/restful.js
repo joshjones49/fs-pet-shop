@@ -3,11 +3,14 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const path = require('path');
+
 //====GLOBAL VARIABLES====================>
 const petsPath = path.join(__dirname, 'pets.json');
 const port = 8000;
+
 //===========MIDDLEWARE===========>
 app.use(express.json());
+
 //====/PETS PATH==========================>
 app.get('/pets', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -19,6 +22,7 @@ app.get('/pets', (req, res) => {
     res.send(petsJSON)
   })
 })
+
 //=====/PETS/INDEX PATH=====================>
 app.get('/pets/:index', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -30,7 +34,7 @@ app.get('/pets/:index', (req, res) => {
     const pets = JSON.parse(petsJSON);
     const index = parseInt(req.params.index);
 
-    if (isNaN(index)|| index < 0 || index >= pets.length) {
+    if (isNaN(index) || index < 0 || index >= pets.length) {
       res.status = 404
       res.send('Not Found');
       return;
@@ -39,6 +43,7 @@ app.get('/pets/:index', (req, res) => {
     res.json(pets[index]);
   });
 });
+
 //===============POST==========================>
 app.post('/pets', (req, res) => {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -62,6 +67,7 @@ app.post('/pets', (req, res) => {
         })
     })
 })
+
 //===================PATCH=================>
 app.patch('/pets/:index', (req, res) => {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -72,8 +78,7 @@ app.patch('/pets/:index', (req, res) => {
         const index = parseInt(req.params.index);
 
         if (isNaN(index)|| index < 0 || index >= pets.length) {
-            res.status = 404
-            res.send('Not Found');
+            res.status(404).send('Not Found')
             return;
           }
           const updatedPet = {
@@ -91,6 +96,7 @@ app.patch('/pets/:index', (req, res) => {
           })
     })
 })
+
 //========================DELETE 1====================>
 app.delete('/pets/:index', (req, res) => {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -103,9 +109,8 @@ app.delete('/pets/:index', (req, res) => {
       //-----turn index into an integer->
       const index = parseInt(req.params.index);
   
-      if (isNaN(index)|| index < 0 || index >= pets.length) {
-        res.status = 404
-        res.send('Not Found');
+      if (isNaN(index) || index < 0 || index >= pets.length) {
+        res.status(404).send('Not Found');
         return;
       }
       //-------delete pet->
@@ -121,7 +126,10 @@ app.delete('/pets/:index', (req, res) => {
       })
     });
   });
+
 //=====SET PORT TO LISTEN====================>
 app.listen(port, () => {
   console.log(`Server Running`);
 });
+
+//==========FUNCTIONS=========>
