@@ -12,6 +12,11 @@
   {
     "age": 9,
     "kind": "cat",
-    "name": "dodo"
+    "name": "salem"
+  },
+  {
+    "age": 6,
+    "kind": "orca",
+    "name": "puck"
   }
 ]
